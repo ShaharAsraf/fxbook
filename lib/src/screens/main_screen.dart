@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fxbook/src/blocs/broker_bloc/broker_bloc_provider.dart';
 import 'package:fxbook/src/models/broker/broker.dart';
-import 'package:fxbook/src/widgets/broker_card.dart';
 import 'package:fxbook/src/widgets/my_app_bar.dart';
+import 'package:fxbook/src/widgets/my_list.dart';
 import 'package:fxbook/src/widgets/my_loader.dart';
 import '../style/colors.dart';
 
@@ -24,25 +24,12 @@ class MainScreen extends StatelessWidget {
             if (snapshot.data?.isEmpty == true || !snapshot.hasData) {
               return const Text('error');
             }
-            return _renderBrokers(snapshot.data!, context);
+            return MyList(
+              snapshot.data!,
+              _onBrokerTap,
+            );
           }),
       appBar: const MyAppBar(),
-    );
-  }
-
-  Widget _renderBrokers(List<Broker> brokers, BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        await BrokerBlocProvider.of(context).fetchBrokers();
-      },
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 24.0),
-        children: brokers
-            .map(
-              (c) => BrokerCard(broker: c, onTap: _onBrokerTap),
-            )
-            .toList(),
-      ),
     );
   }
 
